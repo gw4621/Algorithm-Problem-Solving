@@ -4,7 +4,7 @@ from collections import deque
 EMPTY = 0
 WALL = 1
 ACT_V = 2
-INACT_V = 3
+INACT_V = -1
 
 N, M = list(map(int, sys.stdin.readline().split()))
 vx = []
@@ -43,7 +43,7 @@ def recur_getMinTime(idx):
 def checkComplete(_lab):
 	for i in _lab:
 		for j in i:
-			if j <= 0:
+			if j == EMPTY:
 				return False
 	return True
 
@@ -56,20 +56,24 @@ def virusBfs():
 	copyLab = [x[:] for x in lab]
 	for i in comb:
 		posq.append((vx[i], vy[i]))
+		copyLab[vy[i]][vx[i]] = ACT_V
 		timeq.append(0)
+	if checkComplete(copyLab):
+		return 0
 	while len(posq) > 0:
 		x, y = posq.popleft()
 		t = timeq.popleft()
-		copyLab[y][x] = ACT_V
 		for i in range(-1, 2, 2):
-			if (copyLab[y+i][x] == EMPTY or copyLab[y+i][x] == INACT_V) and (x, y+i) not in posq:
+			if copyLab[y+i][x] <= 0:
 				posq.append((x, y+i))
+				copyLab[y+i][x] = ACT_V
 				timeq.append(t+1)
-			if (copyLab[y][x+i] == EMPTY or copyLab[y][x+i] == INACT_V) and (x+i, y) not in posq:
+			if copyLab[y][x+i] <= 0:
 				posq.append((x+i, y))
+				copyLab[y][x+i] = ACT_V
 				timeq.append(t+1)
 		if checkComplete(copyLab):
-			return t
+			return t+1
 	return -1
 
 print(recur_getMinTime(0))
