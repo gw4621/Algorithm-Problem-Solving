@@ -13,7 +13,8 @@ def rowCal(arr):
 	for row in arr:
 		dd = defaultdict(lambda:0)
 		for num in row:
-			dd[num] += 1
+			if num > 0:
+				dd[num] += 1
 		newrow = sorted(dd.items(), key=lambda x:(x[1]<<20)+x[0])
 		newarr.append([])
 		for i in newrow:
@@ -34,16 +35,18 @@ def colCal(arr):
 
 def solve(A):
 	currentTime = 0
-	if A[r][c] == k:
-		return 0
+	if len(A) > r and len(A[0]) > c:
+		if A[r][c] == k:
+			return 0
 	while currentTime < 100:
 		currentTime += 1
 		if len(A) < len(A[0]):
 			A = colCal(A)
 		else:
 			A = rowCal(A)
-		if A[r][c] == k:
-			return currentTime
+		if len(A) > r and len(A[0]) > c:
+			if A[r][c] == k:
+				return currentTime
 	return -1
 
 print(solve(A))
