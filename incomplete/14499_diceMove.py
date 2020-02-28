@@ -4,7 +4,7 @@ UP = 3
 RIGHT = 1
 LEFT = 2
 DOWN = 4
-posMove = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]
+posMove = [(0, 0), (1, 0), (-1, 0), (0, -1), (0, 1)]
 
 def moveUp(dice):
 	newDice = [dice[i] for i in range(6)]
