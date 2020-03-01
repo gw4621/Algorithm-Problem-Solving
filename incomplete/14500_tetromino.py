@@ -1,4 +1,4 @@
 import sys
 
 print('asd')
-i = 0
+i = 2
