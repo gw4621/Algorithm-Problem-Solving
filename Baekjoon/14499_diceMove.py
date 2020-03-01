@@ -36,26 +36,26 @@ def moveRight(dice):
 	return newDice
 
 def diceMove(N, M, x, y, dice, board, direction):
-	newx = x + posMove[direction][0]
-	newy = y + posMove[direction][1]
-	if not ((0 <= newx < M) and (0 <= newy < N)):
-		return dice, x, y
+	newy = y + posMove[direction][0]
+	newx = x + posMove[direction][1]
+	if not ((0 <= newx < N) and (0 <= newy < M)):
+		return x, y, dice, board
 	
 	if direction==UP:
-		dice = moveUp(dice)	
+		dice = moveUp(dice)
 	elif direction==DOWN:
 		dice = moveDown(dice)
 	elif direction==LEFT:
 		dice = moveLeft(dice)
 	else:
 		dice = moveRight(dice)
-	if board[newy][newx] > 0:
-		dice[2] = board[newy][newx]
-		board[newy][newx] = 0
+	if board[newx][newy] > 0:
+		dice[2] = board[newx][newy]
+		board[newx][newy] = 0
 	else:
-		board[newy][newx] = dice[2]
+		board[newx][newy] = dice[2]
 	print(dice[0])
-	return dice, newx, newy
+	return newx, newy, dice, board
 
 
 def solve(N, M, x, y, K, board, order):
@@ -63,7 +63,7 @@ def solve(N, M, x, y, K, board, order):
 	diceX = x
 	diceY = y
 	for i in order:
-		dice, diceX, diceY = diceMove(N, M, diceX, diceY, dice, board, i)
+		diceX, diceY, dice, board = diceMove(N, M, diceX, diceY, dice, board, i)
 
 N, M, x, y, K = list(map(int, sys.stdin.readline().split()))
 board = []
