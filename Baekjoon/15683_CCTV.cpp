@@ -6,7 +6,7 @@
 #define WALL 6
 
 int N, M;
-char map[10][10];
+char firstMap[10][10];
 char cType[8], cRow[8], cCol[8], cCount;
 
 char cctv1[4][2] = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
@@ -25,9 +25,9 @@ public:
 	}
 	~Node(){
 		for(int i=0;i<10;i++){
-			delete[] map[i];
+			delete[] this->map[i];
 		}
-		delete[] map;
+		delete[] this->map;
 	}
 };
 
@@ -147,7 +147,7 @@ int solve(){
 	for(i=0;i<10;i++){
 		newMap[i] = new char[10];
 		for(j=0;j<10;j++){
-			newMap[i][j] = map[i][j];
+			newMap[i][j] = firstMap[i][j];
 		}
 	}
 	st.clear();
@@ -171,22 +171,24 @@ int main(void){
 	scanf("%d %d", &N, &M);
 	getchar();
 	for(i=0;i<N+2;i++){
-		map[i][0] = WALL;
-		map[i][M+1] = WALL;
+		firstMap[i][0] = WALL;
+		firstMap[i][M+1] = WALL;
 	}
 	for(i=0;i<M+2;i++){
-		map[0][i] = WALL;
-		map[N+1][i] = WALL;
+		firstMap[0][i] = WALL;
+		firstMap[N+1][i] = WALL;
 	}
 	cCount = 0;
 	for(i=1;i<N+1;i++){
 		for(j=1;j<M+1;j++){
-			scanf("%d", &map[i][j]);
+			int k;
+			scanf("%d", &k);
+			firstMap[i][j] = static_cast<char>(k);
 			getchar();
-			if(map[i][j] > 0 && map[i][j] < 6){
+			if(firstMap[i][j] > 0 && firstMap[i][j] < 6){
 				cRow[cCount] = i;
 				cCol[cCount] = j;
-				cType[cCount] = map[i][j];
+				cType[cCount] = firstMap[i][j];
 				cCount += 1;
 			}
 		}
