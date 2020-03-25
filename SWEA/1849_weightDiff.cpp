@@ -1,11 +1,11 @@
 #include <iostream>
-#include <stack>
+// #include <stack>	// For non-recursive version
 
 int parent[100001];
 int weightDiff[100001];
 int rank[100001];
 
-int findParent(int a){
+/*int findParent(int a){	// Non-recursive Version, but timeout
 	std::stack<int> st;
 	std::stack<int> weight;
 	int totalW = 0;
@@ -23,6 +23,14 @@ int findParent(int a){
 		st.pop();
 	}
 	return par;
+}*/
+
+int findParent(int a){
+	if(parent[a] == a) return a;
+	int par = parent[a];
+	parent[a] = findParent(par);
+	weightDiff[a] += weightDiff[par];
+	return parent[a];
 }
 
 void setHeavier(int a, int b, int w){
