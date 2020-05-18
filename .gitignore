@@ -3,3 +3,4 @@ test.*
 *.exe
 .vscode/*
 Secret/*
+*.class
