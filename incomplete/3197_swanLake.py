@@ -1,7 +1,34 @@
 import sys
 from collections import deque
 
+
+# icemelt는 큐 또는 리스트, (바뀌는 Row, 바뀌는 Col, 바뀔 번호)의 형식으로 넣는다.
+
+# 1. swan 퍼뜨리면서 닿는 얼음을 nextbfs 큐에 넣는다. 맞닥뜨리는 얼음을 icemelt에 넣되, 바뀔 때 swan의 번호로 바뀌도록 한다.
+
+# 2. 물(swan 아님)과 닿아있는 얼음을 찾아 icemelt 리스트에 물로 바뀌게 넣는다
+
+# 3. icemelt를 진행하는데, 이 때 물로 바뀐 부분을 다시 백조로 바꿀 순 있지만 백조를 물로 바꿀 수는 없는 점에 유의
+
+# =========================================================
+# 차라리 백조로 바뀌는 부분을 bfs로 뒤에 넣자
+
+# 1. 백조 퍼뜨리면서 닿는 얼음을 nextbfs로 넣는다
+
+# 2. 물과 닿은 얼음을 icemelt set에 넣는다
+
+# 3. icemelt 진행하는데, 얼음 옆에 얼음이 더 있으면 넣는다. set을 사용하는게 좋을듯하다
+
+# 4. 백조가 닿은 얼음 넣었던 nextbfs 큐를 원래 사용하는 큐로 바꾸고 bfs 하는데, 값을 모두 백조 번호로 바꾸되 얼음을 만나면 다시 nextbfs로 넣는다.
+
+
 input = sys.stdin.readline
+
+WATER = 0
+ICE = 1
+SWAN1 = 2
+SWAN2 = 3
+
 
 R, C = map(int, input().split())
 
@@ -12,70 +39,11 @@ area = [[-1 for _ in range(C)] for _ in range(R)]
 dr = (0, 0, 1, -1)
 dc = (1, -1, 0, 0)
 
-dq = deque()
-
-def solve(dq):
-    minTime = float('inf')
-    nextDq = deque()
-    while dq or nextDq:
-        # Do BFS for the time
-        found = False
-        # print("print")
-        # for i in range(R):
-        #     print(''.join(lake[i]))
-        # print()
-
-        while dq:
-            r, c, t = dq.popleft()
-            for d in range(4):
-                nr = r + dr[d]
-                nc = c + dc[d]
-                if 0 <= nr < R and 0 <= nc < C:
-                    if area[nr][nc] < 0:
-                        area[nr][nc] = area[r][c]
-                        if lake[nr][nc] == 'X':
-                            nextDq.append((nr, nc, t+1))
-                        elif lake[nr][nc] == '.':
-                            dq.append((nr, nc, t))
-                    else:
-                        if lake[nr][nc] == 'X' and area[nr][nc] != area[r][c]:
-                            minTime = min(minTime, t+1)
-                            # print((area[nr][nc], area[r][c], nr, nc, t+1, 'X'))
-                            found = True
-                        elif lake[nr][nc] == '.' and area[nr][nc] != area[r][c]:
-                            minTime = min(minTime, t)
-                            # print((area[nr][nc], area[r][c], nr, nc, t, '.'))
-                            found = True
-        if found:
-            print(minTime)
-            return
-        
-        # Ice melt
-        melt = []
-        for r in range(R):
-            for c in range(C):
-                if lake[r][c] == 'X':
-                    for d in range(4):
-                        nr = r + dr[d]
-                        nc = c + dc[d]
-                        if 0 <= nr < R and 0 <= nc < C and (lake[nr][nc] == '.' or lake[nr][nc] == 'L'):
-                            melt.append((r, c))
-                            continue
-        for r, c in melt:
-            lake[r][c] = '.'
-
-        # Change queue and lake
-        tmp = dq
-        dq = nextDq
-        nextDq = tmp
-
-swan = 1
-for i in range(R):
+swan = 2
+for _ in range(R):
     lake.append(list(input().strip()))
-    for j in range(C):
-        if lake[i][j] == 'L':
-            area[i][j] = swan
-            swan += 1
-            dq.append((i, j, 0))
+
+for r in range(R):
+    for c in range(C):
+
             
-solve(dq)
